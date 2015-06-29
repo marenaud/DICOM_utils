@@ -1,7 +1,13 @@
-import dicom
 import glob
 import os
 import random
+
+# Compatibility with pydicom 1.0
+try:
+    from pydicom import dicomio as dicom
+except ImportError:
+    import dicom
+
 
 def anonymize_dicom(dicomfile, new_patient_name="Anonymous", verbose=True):
     times = ["RTPlanTime", "ReviewTime", "StudyTime"]
