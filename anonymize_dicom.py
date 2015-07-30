@@ -1,4 +1,4 @@
-import glob
+import fnmatch
 import os
 import random
 
@@ -8,6 +8,13 @@ try:
 except ImportError:
     import dicom
 
+
+def match_dicom(folder):
+    matches = []
+    for root, dirnames, filenames in os.walk(folder):
+        for filename in fnmatch.filter(filenames, '*.dcm'):
+            matches.append(os.path.join(root, filename))
+    return matches
 
 def anonymize_folder(folder, new_patient_name="Anonymous", verbose=True):
     """
@@ -22,7 +29,7 @@ def anonymize_folder(folder, new_patient_name="Anonymous", verbose=True):
         PatientBirthDate, PatientName, PatientID, StudyID, ReviewerName.
     """
 
-    files = glob.glob(os.path.join(folder, "*.dcm"))
+    files = match_dicom(folder)
     times = ["RTPlanTime", "ReviewTime", "StudyTime"]
     dates = ["RTPlanDate", "ReviewDate", "StudyDate", "PatientBirthDate"]
 
