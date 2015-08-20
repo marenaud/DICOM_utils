@@ -38,28 +38,31 @@ def anonymize_folder(folder, new_patient_name="Anonymous", verbose=True):
     new_studyID = "ANON" + str(random.randint(0, 1000000))
 
     for dicomfile in files:
-        if verbose:
-            print "Anonymizing %s" % dicomfile
+        try:
+            df = dicom.read_file(dicomfile)
+            if verbose:
+                print "Anonymizing %s" % dicomfile
 
-        df = dicom.read_file(dicomfile)
-        if "PatientName" in df:
-            df.PatientName = new_patient_name
-        if "PatientID" in df:
-            df.PatientID = new_patientID
-        if "StudyID" in df:
-            df.StudyID = new_studyID
-        if "ReviewerName" in df:
-            df.ReviewerName = "ANON"
+            if "PatientName" in df:
+                df.PatientName = new_patient_name
+            if "PatientID" in df:
+                df.PatientID = new_patientID
+            if "StudyID" in df:
+                df.StudyID = new_studyID
+            if "ReviewerName" in df:
+                df.ReviewerName = "ANON"
 
-        for date in dates:
-            if date in df:
-                setattr(df, date, "19000101")
+            for date in dates:
+                if date in df:
+                    setattr(df, date, "19000101")
 
-        for time in times:
-            if time in df:
-                setattr(df, time, "111111")
+            for time in times:
+                if time in df:
+                    setattr(df, time, "111111")
 
-        df.save_as(dicomfile)
+            df.save_as(dicomfile)
+        except dicom.filereader.InvalidDicomError:
+            pass
 
 
 def main():
