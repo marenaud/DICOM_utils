@@ -9,7 +9,7 @@ Scripts include:
 
 # Useful DICOM fields in PyDICOM
 ```python
-import dicom
+import pydicom as dicom
 dicom_file = dicom.read_file('filename.dcm')
 
 dicom_file.Rows  # Rows in the DICOM image (vertical direction)
